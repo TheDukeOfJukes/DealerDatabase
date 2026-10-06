@@ -9,7 +9,7 @@ The importer processes sources in a fixed order so later records can enrich deal
 3. **ICO** records link only to an existing dealer by `Company_registration_number`. Rows with a missing/unmatched CRN are ignored rather than creating a separate dealer.
 4. **SAF** first recognizes an existing SAF source-record key (for repeat imports), then uses an exact soft key: normalized legal name plus normalized postcode. If no dealer matches, a dealer is created from `LegalName` or, as in the sample, `Name`.
 5. **Crawled dealers** prefer detected CRN, then detected FRN, then the exact name/postcode soft key. Only successful HTTP 200 rows are used. A new dealer is created for an unmatched CRN only when the crawl supplies a business name; otherwise an unmatched crawl is skipped.
-6. **VAT lookup** and **Marketcheck** use the exact normalized name/postcode soft key. They enrich a matched dealer but do not create one when the key is missing or unmatched.
+6. **VAT lookup** and **Marketcheck** use the exact normalized name/postcode soft key. They enrich a matched dealer but do not create one when the key is missing or unmatched. A Marketcheck row must also have a non-empty `mc_dealer_id` so its source record can be identified; rows without one are skipped.
 
 CRNs have a trailing `.0` removed, whitespace removed, are uppercased, and are left-padded to at least eight characters. Postcodes have whitespace removed and are uppercased. Names are lowercased, stripped of punctuation, have `ltd`, `limited`, `uk`, `co`, and `company` tokens removed, and have repeated spaces collapsed. Addresses collapse whitespace and standardize comma spacing. Unambiguous UK phone numbers are converted to `+44` form; values with extensions or ambiguous formats are preserved. Websites are parsed as HTTP(S), default to HTTPS when no scheme is given, and use a lowercase IDN host while preserving path and query. Soft matching requires both a non-empty normalized legal name and postcode and does not use fuzzy similarity.
 
@@ -49,4 +49,3 @@ The EF model changes are represented by migrations. The expanded dealer migratio
 - A chronological per-field winner history and a source-priority model configurable outside code. Current raw/normalized field observations are retained, but not a complete history of value changes over time.
 - Importing and modeling Companies House officers/directors and crawler finance-calculator details; the brief lists these as examples of additional source-specific data, but they are not currently consolidated.
 - Import-run telemetry, richer reconciliation reports, and larger-volume performance testing.
-
