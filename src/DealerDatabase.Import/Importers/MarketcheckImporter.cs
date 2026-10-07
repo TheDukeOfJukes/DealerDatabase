@@ -1,7 +1,7 @@
 using CsvHelper.Configuration.Attributes;
 using Microsoft.Extensions.Logging;
 
-namespace DealerDatabase.Import;
+namespace DealerDatabase.Import.Importers;
 
 /// <summary>
 /// Imports Marketcheck dealer listings and enriches matched dealer records.
